@@ -3,7 +3,7 @@
  * Plugin Name: Image Teleporter
  * Plugin URI: http://www.BlueMedicineLabs.com/
  * Description: Add linked images to your Media Library automatically. Examines the text of a post/page and makes local copies of all the images linked though IMG tags, adding them as gallery attachments on the post/page itself.
- * Version: 1.0.4
+ * Version: 1.0.5
  * Author: Blue Medicine Labs
  * Author URI: http://www.BlueMedicineLabs.com/
  * License: GPL2

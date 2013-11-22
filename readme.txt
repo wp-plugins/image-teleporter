@@ -4,7 +4,7 @@ Donate link: http://www.BlueMedicineLabs.com/
 Tags: images, gallery, photobloggers, attachments, photo, links, external, photographers, Flickr, save, download
 Requires at least: 2.7
 Tested up to: 3.7.1
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 
 Makes local copies of all the linked images in a post or page, adding them as gallery attachments.
 
@@ -22,8 +22,12 @@ Administrator has the option to replace the external src with the url of the loc
 
 This plugin is particularly useful for photobloggers, especially those who update using the mail2blog Flickr API.   The plugin will saved the linked image file from Flickr locally.
 
-=Short Video Explaining Admin Settings=
-https://www.youtube.com/watch?v=VpLp6OqFwWw
+= Video =
+[youtube http://www.youtube.com/watch?v=VpLp6OqFwWw]
+
+= Stay Up to Date =
+Follow us on Facebook: https://www.facebook.com/bluemedicinelabs
+Visit our Website: http://www.BlueMedicineLabs.com/
 
 = Planned features: =
 * Code to work with spaces and some legal special characters
@@ -65,6 +69,12 @@ Yes, there are numerous ways that this plugin could be used unethically, but the
 1. This screenshot is the admin screen you will find under Settings.
 
 == Changelog ==
+
+= 1.0.5 =
+* Added YouTube Video
+
+= 1.0.4 =
+* Added Screenshot.
 
 = 1.0.3 = 
 * Added the ability to handle HTTPS URL's and ignore case in URL's.
