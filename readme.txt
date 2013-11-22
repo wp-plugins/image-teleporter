@@ -59,7 +59,7 @@ Yes, there are numerous ways that this plugin could be used unethically, but the
 
 == Screenshots ==
 
-none
+1. This screenshot is the admin screen you will find under Settings.
 
 == Changelog ==
 
