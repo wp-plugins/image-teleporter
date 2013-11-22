@@ -4,7 +4,7 @@ Donate link: http://www.BlueMedicineLabs.com/
 Tags: images, gallery, photobloggers, attachments, photo, links, external, photographers, Flickr, save, download
 Requires at least: 2.7
 Tested up to: 3.7.1
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 
 Makes local copies of all the linked images in a post or page, adding them as gallery attachments.
 
@@ -21,6 +21,9 @@ Create local copies of external images in the src attribute of img tags.  This p
 Administrator has the option to replace the external src with the url of the local copy. Another option allows the plugin to be applied to all external images, or only to those on Flickr.
 
 This plugin is particularly useful for photobloggers, especially those who update using the mail2blog Flickr API.   The plugin will saved the linked image file from Flickr locally.
+
+=Short Video Explaining Admin Settings=
+https://www.youtube.com/watch?v=VpLp6OqFwWw
 
 = Planned features: =
 * Code to work with spaces and some legal special characters
