@@ -71,7 +71,7 @@ Yes, there are numerous ways that this plugin could be used unethically, but the
 == Changelog ==
 
 = 1.1.0 =
-* Fullfilled Feature request to allow batch processing of past posts in cases where there are thousands of posts. Implemented batch feature. If you leave it blank it processes everything. If you add a number you are defining the batch it will process each time. When the batch is finished a Continue button is available to continue to the next batch. Thanks @chillopedia for the suggestion!
+* Fullfilled Feature request to allow batch processing of past posts in cases where there are thousands of posts. Implemented batch feature. If you leave it blank it processes everything. If you add a number you are defining the batch it will process each time. When the batch is finished a Continue button is available to continue to the next batch. Thanks Nadeem Khan (chillopedia) for the suggestion!
 
 = 1.0.7 =
 * Left default in place of only pulling last 5 posts, fixed to include all posts.
