@@ -3,7 +3,7 @@
  * Plugin Name: Image Teleporter
  * Plugin URI: http://www.BlueMedicineLabs.com/
  * Description: Add linked images to your Media Library automatically. Examines the text of a post/page and makes local copies of all the images linked though IMG tags, adding them as gallery attachments on the post/page itself.
- * Version: 1.0.7
+ * Version: 1.1.0
  * Author: Blue Medicine Labs
  * Author URI: http://www.BlueMedicineLabs.com/
  * License: GPL2
@@ -309,12 +309,22 @@ function bml_it_loadimage ($url) {
 	return $body;
 }
 
-function bml_it_backcatalog () {
+function bml_it_backcatalog ($batch,$offset) {
 	global $bml_it_count;
 	$count = 0;
-	$ppages = get_pages(  );
-	$pposts = get_posts( array( 'numberposts'=>-1 ) );
-	$pp = array_merge($ppages,$pposts);
+	if ($batch) {
+		if ($offset) {
+			$pp = get_posts( array( 'numberposts' => $batch, 'offset' => $offset ) );			
+		} else {
+			$ppages = get_pages(  );
+			$pposts = get_posts( array( 'numberposts'=> $batch ) );
+			$pp = array_merge($ppages,$pposts);
+		}
+	} else {
+		$ppages = get_pages(  );
+		$pposts = get_posts( array( 'numberposts'=>-1 ) );
+		$pp = array_merge($ppages,$pposts);
+	}
 	foreach ($pp as $p) {
 		try {
 			echo '<p>[' . $p->ID . '] ' . $p->post_title . ': ';
@@ -324,6 +334,11 @@ function bml_it_backcatalog () {
 			echo '<em>an error occurred</em>.</p>';
 		}
 		$count += $bml_it_count;
+	}
+	if (count($pp) < $batch || !$batch) {
+		return 1;
+	} else {
+		return 0;
 	}
 }
 
@@ -372,8 +387,18 @@ function bml_it_options () {
 	echo '<h2>Image Teleporter (Add linked images to your Media Library automatically)</h2>';
 
 	if ($_POST['action']=='backcatalog') {
-		bml_it_backcatalog();
-		echo '<div id="message" class="updated fade" style="background-color:rgb(255,251,204);"><p>Finished processing past posts!</p></div>';
+		$done = bml_it_backcatalog($_POST['batch'],$_POST['offset']);
+		if ($_POST['batch'] && !$done) {
+			echo '<form name="bml_it-backcatalog" method="post" action="">';
+			echo '<div class="submit">';
+			$offset = $_POST['offset'] + $_POST['batch'];
+			echo '<input type="hidden" name="action" value="backcatalog"><input type="hidden" name="offset" value="' . $offset . '"><input type="hidden" name="batch" value="' . $_POST['batch'] . '">';
+			echo '<input type="submit" class="button-primary" value="' . __('Continue Processing') . '" />';
+			echo '</div>';
+			echo '</form>';
+		} else {
+			echo '<div id="message" class="updated fade" style="background-color:rgb(255,251,204);"><p>Finished processing past posts!</p></div>';
+		}
 	}
 
 	if ($_POST['action']=='update') {
@@ -434,10 +459,10 @@ function bml_it_options () {
 	echo '<div class="wrap">';
 	echo '<big>Process all posts</big>';
 	echo '<p>Use this function to apply the plugin to all previous posts. The settings specified above will still be respected.</p>';
-	echo '<p><em>Please note that this can take a long time for sites with a lot of posts.</em></p>';
+	echo '<p><em>Please note that this can take a long time for sites with a lot of posts. </p><p>If you leave "Batch" Empty it will process all posts. However you can enter a number for the batch and it will process all pages and then the number of posts you\'ve selected, and provide a continue button to process the next batch.</em></p>';
 	echo '<div class="submit">';
-	echo '<input type="hidden" name="action" value="backcatalog">';
-	echo '<input type="submit" class="button-primary" value="' . __('Process') . '" />';
+	echo '<input type="hidden" name="action" value="backcatalog"><input type="hidden" name="offset" value="0">';
+	echo 'Batch:<input type="text" name="batch" value=""><br /><br /><input type="submit" class="button-primary" value="' . __('Process') . '" />';
 	echo '</div>';
 	echo '<p>&nbsp;</p>';
 	echo '</div>';
