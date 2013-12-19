@@ -3,7 +3,7 @@
  * Plugin Name: Image Teleporter
  * Plugin URI: http://www.BlueMedicineLabs.com/
  * Description: Add linked images to your Media Library automatically. Examines the text of a post/page and makes local copies of all the images linked though IMG tags, adding them as gallery attachments on the post/page itself.
- * Version: 1.0.5
+ * Version: 1.0.6
  * Author: Blue Medicine Labs
  * Author URI: http://www.BlueMedicineLabs.com/
  * License: GPL2
@@ -38,6 +38,7 @@ register_activation_hook(__FILE__, 'bml_it_install');
 
 add_action('save_post', 'bml_it_find_imgs');
 
+
 // Primary function runs on Save Post
 function bml_it_find_imgs ($post_id) {
 
@@ -58,7 +59,7 @@ function bml_it_find_imgs ($post_id) {
 		if (!$catfound) return;
 	}
 	
-	$post = get_page($post_id);
+	$post = get_post($post_id);
 	$a = get_option('bml_it_authlist');
 	if($a && !in_array($post->post_author, explode(',', $a))) return;
 	
@@ -311,7 +312,9 @@ function bml_it_loadimage ($url) {
 function bml_it_backcatalog () {
 	global $bml_it_count;
 	$count = 0;
-	$pp = get_pages( array( 'numberposts'=>-1 ) );
+	$ppages = get_pages(  );
+	$pposts = get_posts(  );
+	$pp = array_merge($ppages,$pposts);
 	foreach ($pp as $p) {
 		try {
 			echo '<p>[' . $p->ID . '] ' . $p->post_title . ': ';
