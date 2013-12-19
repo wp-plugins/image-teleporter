@@ -26,8 +26,8 @@ This plugin is particularly useful for photobloggers, especially those who updat
 [youtube http://www.youtube.com/watch?v=VpLp6OqFwWw]
 
 = Stay Up to Date =
-Follow us on Facebook: https://www.facebook.com/bluemedicinelabs
-Visit our Website: http://www.BlueMedicineLabs.com/
+* Follow us on Facebook: https://www.facebook.com/bluemedicinelabs
+* Visit our Website: http://www.BlueMedicineLabs.com/
 
 = Planned features: =
 * Code to work with spaces and some legal special characters
