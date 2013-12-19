@@ -4,7 +4,7 @@ Donate link: http://www.BlueMedicineLabs.com/
 Tags: images, gallery, photobloggers, attachments, photo, links, external, photographers, Flickr, save, download
 Requires at least: 2.7
 Tested up to: 3.8
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 
 Makes local copies of all the linked images in a post or page, adding them as gallery attachments.
 
@@ -69,6 +69,9 @@ Yes, there are numerous ways that this plugin could be used unethically, but the
 1. This screenshot is the admin screen you will find under Settings.
 
 == Changelog ==
+
+= 1.0.7 =
+* Left default in place of only pulling last 5 posts
 
 = 1.0.6 =
 * Fixed bug where proccessing old posts would ignore posts and only process pages. Now Everything is processed.
