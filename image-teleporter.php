@@ -3,7 +3,7 @@
  * Plugin Name: Image Teleporter
  * Plugin URI: http://www.BlueMedicineLabs.com/
  * Description: Add linked images to your Media Library automatically. Examines the text of a post/page and makes local copies of all the images linked though IMG tags, adding them as gallery attachments on the post/page itself.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Blue Medicine Labs
  * Author URI: http://www.BlueMedicineLabs.com/
  * License: GPL2
@@ -29,6 +29,14 @@ require_once(ABSPATH . 'wp-admin/includes/file.php');
 require_once(ABSPATH . 'wp-admin/includes/media.php');
 
 $bml_it_count = 0;
+
+// PHP_VERSION_ID is available as of PHP 5.2.7, if our 
+// version is lower than that, then emulate it
+if (!defined('PHP_VERSION_ID')) {
+    $version = explode('.', PHP_VERSION);
+
+    define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+}
 
 if ( is_admin() ) { // admin actions
 	add_action('admin_menu', 'bml_it_menu');
@@ -78,7 +86,7 @@ function bml_it_find_imgs ($post_id) {
 			$pathname = $parseurl['path'];
 			$filename = substr(strrchr($pathname, '/'), 1);
 			if (preg_match ('/(\.php|\.aspx?)$/', $filename) ) $filename .= '.jpg';
-			$imgid   = bml_it_sideload($imgs[$i], $filename, $post_id);
+			$imgid   = bml_it_sideload(strtok($imgs[$i], '?'), $filename, $post_id);
 			$imgpath = wp_get_attachment_url($imgid);
 			if (!is_wp_error($imgpath)) {
 				if ($l=='custtag') {
@@ -103,7 +111,9 @@ function bml_it_find_imgs ($post_id) {
 
 // Grab the extention of the file
 function bml_it_getext ($file) {
-	if (function_exists('mime_content_type'))
+	if ( PHP_VERSION_ID > 50299 )
+		$mime = _mime_content_type($file);
+	elseif ( function_exists('mime_content_type') )
 		$mime = mime_content_type($file);
 	else return '';
 	switch($mime) {
@@ -119,6 +129,17 @@ function bml_it_getext ($file) {
 			break;
 	}
 	return '';
+}
+
+function _mime_content_type($filename) {
+	// Instantiate finfo
+	$result = new finfo();
+	// Get Mime Type with PHP 5.3 compatible method
+	if (is_resource($result) === true) {
+		return $result->file($filename, FILEINFO_MIME_TYPE);
+	}
+	
+	return false;
 }
 
 function bml_it_sideload ($file, $url, $post_id) {

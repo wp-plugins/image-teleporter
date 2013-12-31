@@ -4,7 +4,7 @@ Donate link: http://www.BlueMedicineLabs.com/
 Tags: images, gallery, photobloggers, attachments, photo, links, external, photographers, Flickr, save, download
 Requires at least: 2.7
 Tested up to: 3.8
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 
 Makes local copies of all the linked images in a post or page, adding them as gallery attachments.
 
@@ -69,6 +69,10 @@ Yes, there are numerous ways that this plugin could be used unethically, but the
 1. This screenshot is the admin screen you will find under Settings.
 
 == Changelog ==
+
+= 1.1.1 =
+* Reported bug - not working on PHP 5.3.0. Updated functions to use finfo information instead of mime_content_type for PHP 5.3.0 or greater
+* Reported bug - Doesn't work on images with GET variables on the end of the URL. Added strtok to clean off the GET Variables ^ Might need to add functionality to turn on or off that feature.
 
 = 1.1.0 =
 * Fullfilled Feature request to allow batch processing of past posts in cases where there are thousands of posts. Implemented batch feature. If you leave it blank it processes everything. If you add a number you are defining the batch it will process each time. When the batch is finished a Continue button is available to continue to the next batch. Thanks Nadeem Khan (chillopedia) for the suggestion!
