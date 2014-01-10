@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Image Teleporter
  * Plugin URI: http://www.BlueMedicineLabs.com/
- * Description: Add linked images to your Media Library automatically. Examines the text of a post/page and makes local copies of all the images linked though IMG tags, adding them as gallery attachments on the post/page itself.
- * Version: 1.1.1
+ * Description: This plugin waves a magic wand and turns images that are hosted elsewhere (like in your Flickr account or on another website) into images that are now in your Media Library. The code on your page is automatically updated so that your site now uses the version of the images that are in your Media Library instead.
+ * Version: 1.1.2
  * Author: Blue Medicine Labs
  * Author URI: http://www.BlueMedicineLabs.com/
  * License: GPL2
@@ -404,9 +404,39 @@ function bml_it_install () {
 function bml_it_options () {
 	$_cats  = '';
 	$_auths = '';
-	echo '<div class="wrap">';
-	echo '<h2>Image Teleporter (Add linked images to your Media Library automatically)</h2>';
+	echo '<div class="wrap" style="width: 60%;padding: 10px 20px 10px 20px;float: left;">';
+	echo '<h1 style="font-size: 38px;font-weight: 300;line-height: 1.25;margin-bottom:10px;">Image Teleporter</h1><i>Add linked images to your Media Library automatically</i>';
 
+	if ($_POST['action']=='signup') {
+		require_once 'MCAPI.class.php';
+		require_once 'config.inc.php';
+		$api = new MCAPI($apikey);
+
+		$merge_vars = array('FNAME'=>$_POST['FNAME'], 
+		                  'GROUPINGS'=>array(
+		                        array('name'=>'Plugins', 'groups'=>'Image Teleporter'),
+		                        array('name'=>'Location', 'groups'=>'Plugin Signup'),
+		                        array('name'=>'Notification', 'groups'=>'Plugin Updates'),
+		                        )
+		                    );
+		
+		// By default this sends a confirmation email - you will not see new members
+		// until the link contained in it is clicked!
+		if ($_POST['b_07ec85a6e97e7da84feb2fb3d_1b516804a2'] == "") {
+			$retval = $api->listSubscribe( $listId, $_POST['EMAIL'], $merge_vars,'html',TRUE,TRUE,FALSE,TRUE );
+
+			if ($api->errorCode){
+			    echo '<div id="message" class="updated fade" style="background-color:rgb(255,251,204);"><p>';
+				echo "Unable to load listSubscribe()!\n";
+				echo "\tCode=".$api->errorCode."\n";
+				echo "\tMsg=".$api->errorMessage."\n";
+			    echo '</p></div>';
+			} else {
+			    echo '<div id="message" class="updated fade" style="background-color:rgb(255,251,204);"><p>Subscribed - look for the confirmation email!</p></div>';
+			}
+		}
+	}
+	
 	if ($_POST['action']=='backcatalog') {
 		$done = bml_it_backcatalog($_POST['batch'],$_POST['offset']);
 		if ($_POST['batch'] && !$done) {
@@ -431,20 +461,22 @@ function bml_it_options () {
 		update_option('bml_it_authlist', ($_POST['bml_it_authlist']) ? implode(',', $_POST['bml_it_auths']) : '');
 		echo '<div id="message" class="updated fade" style="background-color:rgb(255,251,204);"><p>Settings updated.</p></div>';
 	}
-	echo '<big>Options</big>';
+	bml_it_signup();
+	echo '<h2>Options</h2>';
+	echo '<p>The following options will start working the next time you save a Post/Page. (You can also make this work retrospectively on past Posts/Pages using the next section below.)</p>';
 	echo '<form name="bml_it-options" method="post" action="">';
 	settings_fields('bml_it');
 	echo '<table class="form-table"><tbody>';
 	echo '<tr valign="top"><th scope="row"><strong>Which external IMG links to process:</strong></th>';
 	echo '<td><label for="myradio1"><input id="myradio1" type="radio" name="bml_it_whichimgs" value="All" ' . (get_option('bml_it_whichimgs')!='Flickr'?'checked="checked"':'') . '/> All images</label><br/>';
 	echo '<label for="myradio2"><input id="myradio2" type="radio" name="bml_it_whichimgs" value="Flickr" ' . (get_option('bml_it_whichimgs')=='Flickr'?'checked="checked"':'') . ' /> Only Flickr images</label><br/>';
-	echo '<p>By default, all external images are processed.  This can be set to only apply to Flickr.</p>';
+	echo '<p style="font-size: 12px;margin: 8px 10px 0 26px;">By default, all external images are processed.  This can be set to only apply to Flickr.</p>';
 	echo '</td></tr>';
 	echo '<tr valign="top"><th scope="row"><strong>What to do with the images:</th>';
 	echo '<td><label for="myradio3"><input id="myradio3" type="radio" name="bml_it_replacesrc" value="replace" ' . (get_option('bml_it_replacesrc')!='custtag'?'checked="checked"':'') . ' /> Replace SRC attribute with local copy</label><br/>';
 	echo '<label for="myradio4"><input id="myradio4" type="radio" name="bml_it_replacesrc" value="custtag" ' . (get_option('bml_it_replacesrc')=='custtag'?'checked="checked"':'') . ' /> Use custom tag:</label> ';
 	echo '<input type="text" size="20" name="bml_it_custtagname" value="' . get_option('bml_it_custtagname') . '" /><br/>';
-	echo '<p>Replacing the SRC attribute will convert the external IMG link to a local link, pointed at the local copy downloaded by this plugin. If the SRC attribute is not replaced, the plugin needs to mark the IMG as having been processed somehow, so this is done by tracking processed images in custom_tag values.  You can change the name of the custom tag.</p></td></tr>';
+	echo '<p style="font-size: 12px;margin: 8px 10px 0 26px;">Replacing the SRC attribute will convert the external IMG link to a local link, pointed at the local copy downloaded by this plugin. If the SRC attribute is not replaced, the plugin needs to mark the IMG as having been processed somehow, so this is done by tracking processed images in custom_tag values.  You can change the name of the custom tag.</p></td></tr>';
 	
 	echo '<tr align="top"><th scope="row"><strong>Apply to these categories:</strong></th>';
 	echo '<td><label for="myradio5"><input type="radio" id="myradio5" name="bml_it_catlist" value="" ' . (get_option('bml_it_catlist')==''?'checked="checked"':'') . ' /> All categories</label><br/>';
@@ -455,7 +487,7 @@ function bml_it_options () {
 	$cats = get_categories();
 	foreach ($cats as $cat) {
 		$chcount++;
-		echo '<label for="mycheck'.$chcount.'"><input type="checkbox" id="mycheck'.$chcount.'" name="bml_it_cats[]" value="' . $cat->cat_ID . '" '.(in_array($cat->cat_ID, $_cats)?'checked="checked"':'').' /> ' . $cat->cat_name . '</label><br/>';
+		echo '<label for="mycheck'.$chcount.'"><input type="checkbox" id="mycheck'.$chcount.'" name="bml_it_cats[]" value="' . $cat->cat_ID . '" '.(in_array($cat->cat_ID, $_cats)?'checked="checked"':'').' style="margin-left: 25px;" /> ' . $cat->cat_name . '</label><br/>';
 	}
 	echo '</td></tr>';
 	echo '<tr align="top"><th scope="row"><strong>Apply to these authors:</strong></th>';
@@ -466,7 +498,7 @@ function bml_it_options () {
 	$auths = bml_it_getauthors();
 	foreach ($auths as $auth) {
 		$chcount++;
-		echo '<label for="mycheck'.$chcount.'"><input type="checkbox" id="mycheck'.$chcount.'" name="bml_it_auths[]" value="' . $auth->ID . '" '.(in_array($auth->ID, $_auths)?'checked="checked"':'').'/> ' . $auth->display_name . '</label><br/>';
+		echo '<label for="mycheck'.$chcount.'"><input type="checkbox" id="mycheck'.$chcount.'" name="bml_it_auths[]" value="' . $auth->ID . '" '.(in_array($auth->ID, $_auths)?'checked="checked"':'').' style="margin-left: 25px;" /> ' . $auth->display_name . '</label><br/>';
 	}
 	echo '</td></tr>';
 	
@@ -478,9 +510,9 @@ function bml_it_options () {
 
 	echo '<form name="bml_it-backcatalog" method="post" action="">';
 	echo '<div class="wrap">';
-	echo '<big>Process all posts</big>';
-	echo '<p>Use this function to apply the plugin to all previous posts. The settings specified above will still be respected.</p>';
-	echo '<p><em>Please note that this can take a long time for sites with a lot of posts. </p><p>If you leave "Batch" Empty it will process all posts. However you can enter a number for the batch and it will process all pages and then the number of posts you\'ve selected, and provide a continue button to process the next batch.</em></p>';
+	echo '<h2>Process Pre-existing Posts/Pages</h2>';
+	echo '<p>Use this function to apply the Image Teleporter to all your pre-existing Pages and Posts. The settings specified above will still be respected.&nbsp;<em>Please note that this can take a long time for sites with a lot of Posts and/or Pages.</em></p>';
+	echo '<p>If you leave the&nbsp;<strong>Batch</strong>&nbsp;field empty below, it will process <em>all</em> Posts and Pages. However you can enter a number of posts to process in a batch, and it will process all Pages and then the number of Posts you’ve selected. You will then be provided a <strong>Continue</strong> button to process the next batch.</p>';
 	echo '<div class="submit">';
 	echo '<input type="hidden" name="action" value="backcatalog"><input type="hidden" name="offset" value="0">';
 	echo 'Batch:<input type="text" name="batch" value=""><br /><br /><input type="submit" class="button-primary" value="' . __('Process') . '" />';
@@ -491,6 +523,197 @@ function bml_it_options () {
 
 	echo '';
 	echo '</div>';
+	bml_it_sidenav();
+	
+}
+function bml_it_signup() {
+	echo '<h2 style="padding-top:20px;">Stay up-to-date</h2>
+		<div style="background: none repeat scroll 0 0 #FEFD9B;border: 1px solid #E8E70A;padding: 20px 20px 15px;overflow: auto;">
+			<p style="margin-top:0;">Enter your name and email address here and we will email you short announcements whenever we make any 
+			important changes to this plugin. Now you’ll know straight away when there is an update available. (You 
+			can stop receiving the emails at any time with one simple click.)</p>
+			<form name="bml_it-signup" method="post" action="">
+			<input type="hidden" name="action" value="signup">
+			<div class="formname" style="display: inline-block;float: left;margin: 0 30px 10px 0;">
+				<strong>First Name:</strong> <input type="text" value="" name="FNAME" class="required" id="mce-FNAME">
+			</div>
+			<div class="formemail" style="display: inline-block;float: left;margin: 0 60px 10px 0;">
+				<strong>Email:</strong> <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+			</div>
+			<div style="position: absolute; left: -5000px;"><input type="text" name="b_07ec85a6e97e7da84feb2fb3d_1b516804a2" value=""></div>
+			<div class="submit" style="padding: 0;">
+				<input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="button button-primary">
+			</div>
+			</form>
+		</div>';
+}
+function bml_it_sidenav () {
+	echo '<div class="sidebar" style="width: 240px;float: right;display: inline;">
+		<style>
+			.wrap p {font-size:14px;}
+			.sidebar {
+				padding: 20px 20px 0 0;
+			}
+			.sidebar .widget { 
+				background: #F7F7F7;
+				border-top: 0px solid #DDDDDD;
+				border-bottom: 2px solid #DDDDDD;
+				border-left: 0px solid #DDDDDD;
+				border-right: 0px solid #DDDDDD;
+				margin: 0px 0 15px;
+				padding: 0 0 15px;
+				-webkit-border-radius: 3px;
+				border-radius: 3px;
+			}
+			.sidebar .widget h4 {
+				background: #333333;
+				border-top: 0px solid #DDDDDD;
+				border-bottom: 2px solid #DDDDDD;
+				border-left: 0px solid #DDDDDD;
+				border-right: 0px solid #DDDDDD;
+				margin: 0;
+				padding: 15px 25px 15px 25px;
+				color: #FFFFFF;
+				font-family: "Open Sans",sans-serif;
+				font-size: 16px;
+				font-weight: 600;
+				line-height: 1.25;
+				-webkit-border-radius: 3px;
+				border-radius: 3px;
+			}
+			.sidebar .widget-wrap p {
+				margin: 10px 10px 0;
+			}
+			.sidebar .widget-wrap .button-primary {
+				margin: 10px 10px 0;
+			}
+		</style>';
+	bml_it_support();
+	bml_it_aboutus();
+	bml_it_socialmedia();
+	bml_it_donate();
+	echo '</div>';
+}
+function bml_it_support () {
+	echo '<section id="swboc" class="widget">
+		<div class="widget-wrap">
+			<h4 class="widget-title">Having trouble?</h4>
+			<p>
+				<a href="http://www.bluemedicinelabs.com/submit-ticket/">
+					<img class="aligncenter size-full wp-image-125" alt="bugbee" src="' . plugins_url( 'images/bugbee.png' , __FILE__ ) . '" width="215" height="205">
+				</a>
+				Have you found a bug? Or are you having trouble getting this plugin to work? Are the instructions 
+				too geeky to understand? Please let us know right away, so we can help you out.
+			</p>
+			<div>
+				<a title="Get Support" href="http://www.bluemedicinelabs.com/submit-ticket/">
+					<input class="button-primary" type="submit" name="submit" value="Get Support">
+				</a>
+			</div>
+		</div>
+		</section>';
+}
+function bml_it_aboutus () {
+	echo '<section id="swboc" class="widget">
+		<div class="widget-wrap">
+			<h4 class="widget-title widgettitle">Who made this plugin?</h4>
+			<p>
+				<a href="http://bluemedicinelabs.com">
+				<img class="aligncenter size-full wp-image-112" alt="Blue-Medicine-Labs-profile-picture" src="' . plugins_url( 'images/Blue-Medicine-Labs-profile-picture.jpg' , __FILE__ ) . '" width="215" height="215">
+				</a>
+			</p>
+			<p>
+				<strong>Jason Diehl </strong>&amp;<strong> Trisha Cupra</strong> turn WordPress headaches into successful, pain-free small business websites.
+			</p>
+			<div>
+				<a title="Blue Medicine Labs" href="http://www.bluemedicinelabs.com/">
+					<input class="button-primary" type="submit" name="submit" value="Visit our website">
+				</a>
+			</div>
+		</div></section>';
+}
+function bml_it_socialmedia () {
+	echo '<style>
+			.metro-social li {
+				position: relative;
+				cursor: pointer;
+				list-style: none;
+				margin: 1px;
+			}
+			.metro-social li a {
+				float: left;
+				margin: 1px;
+				position: relative;
+				display: block;
+				padding: 0;
+			}
+			.metro-social .metro-facebook {
+				background: url(' . plugins_url( 'images/facebook.png' , __FILE__ ) . ') no-repeat center center #1f69b3;
+				width: 47%;
+				height: 140px;
+			}
+			.metro-social .metro-googleplus {
+				background: url(' . plugins_url( 'images/google.png' , __FILE__ ) . ') no-repeat center center #da4a38;
+				width: 23.3%;
+				height: 69px;
+			}
+			.metro-social .metro-twitter {
+				background: url(' . plugins_url( 'images/twitter.png' , __FILE__ ) . ') no-repeat center center #43b3e5;
+				width: 23%;
+				height: 69px;
+			}
+			.metro-social .metro-pinterest {
+				background:url(' . plugins_url( 'images/pinterest.png' , __FILE__ ) . ') no-repeat center center #d73532;
+				width:23.2%;
+				height:69px;
+			}
+			.metro-social .metro-linkedin {
+				background:url(' . plugins_url( 'images/linkedin.png' , __FILE__ ) . ') no-repeat center center #0097bd;
+				width:23%;
+				height:69px;
+			}
+			.metro-social .metro-youtube {
+				background:url(' . plugins_url( 'images/youtube.png' , __FILE__ ) . ') no-repeat center center #e64a41;
+				width:47%;
+				height:69px;
+			}
+			.metro-social .metro-rss {
+				background:url(' . plugins_url( 'images/feed.png' , __FILE__ ) . ') no-repeat center center #e9a01c;
+				width:47%;
+				height:69px;
+			}
+		</style>';
+	echo '<section id="swboc" class="widget">
+		<div class="widget-wrap"><h4 class="widget-title widgettitle">Connect with us</h4>
+			<div class="metro-social" style="width:230px;height: 212px;padding: 10px 10px 0;">
+				<li><a class="metro-facebook" target="_blank" href="http://www.facebook.com/bluemedicinelabs"></a></li>
+				<li><a class="metro-googleplus" target="_blank" href="https://plus.google.com/101111543664634710017/"></a></li>
+				<li><a class="metro-twitter" target="_blank" href="http://www.twitter.com/bluemedicinelab"></a></li>
+				<li><a class="metro-linkedin" target="_blank" href="http://www.linkedin.com/company/blue-medicine-labs"></a></li>
+				<li><a class="metro-pinterest" target="_blank" href="http://www.pinterest.com/bluemedicinelab"></a></li>
+				<li><a class="metro-rss" target="_blank" href="http://bluemedicinelabs.com/feed/"></a></li>
+				<li><a class="metro-youtube" target="_blank" href="http://www.youtube.com/bluemedicinelabs"></a></li>
+			</div>
+        </div>
+        </section>';
+}
+function bml_it_donate () {
+	echo '<section id="swboc" class="widget">
+		<div class="widget-wrap">
+			<h4 class="widget-title">Donate</h4>
+			<p>
+				Thanks for contributing to our lunch money.
+				<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5S792BZ877JT6">
+					<img src="' . plugins_url( 'images/sandwich-74330_640.png' , __FILE__ ) . '" alt="sandwich" width="215" height="172" class="aligncenter size-full wp-image-126">
+				</a>
+			</p>
+			<div>
+				<a title="Donate" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5S792BZ877JT6">
+					<input class="button-primary" type="submit" name="submit" value="Buy us a Sandwich">
+				</a>
+			</div>
+		</div>
+		</section>';
 }
 
 ?>
