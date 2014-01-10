@@ -17,9 +17,9 @@ Maybe you're a photoblogger and you add your photos to Flickr, and then embed th
 = Here are some problems we can help you with: =
 
 * You can't create a WP gallery or post thumbnails with images that aren't in your WP Media Library. That's annoying.
-*You copy an article from another site you own, including the code for the images that go with it. Later in future, you change the article on the other site and delete one of the images, forgetting that you're using that image on your WP site. Now you have a missing image on the second article, and you don't even realize it. That's embarrassing.
-*What happens if Flickr (or any other image hosting service you may use) goes down, or even goes bust, or something bad happens to your account? Your images on your WP site will all disappear. That's scary.
-*Moving a static HTML website, or a blog on another platform (Blogger, Typepad, WordPress.com, etc) can be a real hassle when it comes to your images. Often your new WP site's code will still be using the images from your old site. If you get rid of your old site, all your images will suddenly disappear along with it. That's a major pain in the backside (especially if you don't have backups of all those images.)
+* You copy an article from another site you own, including the code for the images that go with it. Later in future, you change the article on the other site and delete one of the images, forgetting that you're using that image on your WP site. Now you have a missing image on the second article, and you don't even realize it. That's embarrassing.
+* What happens if Flickr (or any other image hosting service you may use) goes down, or even goes bust, or something bad happens to your account? Your images on your WP site will all disappear. That's scary.
+* Moving a static HTML website, or a blog on another platform (Blogger, Typepad, WordPress.com, etc) can be a real hassle when it comes to your images. Often your new WP site's code will still be using the images from your old site. If you get rid of your old site, all your images will suddenly disappear along with it. That's a major pain in the backside (especially if you don't have backups of all those images.)
 
 = What does the Image Teleporter plugin do? =
 
