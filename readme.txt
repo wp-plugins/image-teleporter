@@ -6,7 +6,7 @@ Requires at least: 2.7
 Tested up to: 3.8
 Stable tag: 1.1.2
 
-This plugin waves a magic wand and turns images that are hosted elsewhere (like in your Flickr account or on another website) into images that are now in your Media Library. The code on your page is automatically updated so that your site now uses the version of the images that are in your Media Library instead.
+This plugin turns images that are hosted elsewhere into images that are now in your Media Library, and the code on your page is automatically updated.
 
 == Description ==
 
