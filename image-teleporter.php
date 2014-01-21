@@ -3,7 +3,7 @@
  * Plugin Name: Image Teleporter
  * Plugin URI: http://www.BlueMedicineLabs.com/
  * Description: This plugin waves a magic wand and turns images that are hosted elsewhere (like in your Flickr account or on another website) into images that are now in your Media Library. The code on your page is automatically updated so that your site now uses the version of the images that are in your Media Library instead.
- * Version: 1.1.2
+ * Version: 1.1.3
  * Author: Blue Medicine Labs
  * Author URI: http://www.BlueMedicineLabs.com/
  * License: GPL2
@@ -96,7 +96,7 @@ function bml_it_find_imgs ($post_id) {
 					$content = preg_replace('/(<img[^>]* src=[\'"]?)('.$trans.')/', '$1'.$imgpath, $content);
 					$replaced = true;
 				}
-				$processed[] = $imgs[i];
+				$processed[] = $imgs[$i];
 				$bml_it_count++;
 			}
 		}
@@ -406,8 +406,14 @@ function bml_it_options () {
 	$_auths = '';
 	echo '<div class="wrap" style="width: 60%;padding: 10px 20px 10px 20px;float: left;">';
 	echo '<h1 style="font-size: 38px;font-weight: 300;line-height: 1.25;margin-bottom:10px;">Image Teleporter</h1><i>Add linked images to your Media Library automatically</i>';
+	
+	if (isset($_POST['action'])) {
+		$action = $_POST['action'];
+	} else {
+		$action = '';
+	}
 
-	if ($_POST['action']=='signup') {
+	if ( $action=='signup' ) {
 		require_once 'MCAPI.class.php';
 		require_once 'config.inc.php';
 		$api = new MCAPI($apikey);
@@ -437,7 +443,7 @@ function bml_it_options () {
 		}
 	}
 	
-	if ($_POST['action']=='backcatalog') {
+	if ( $action=='backcatalog' ) {
 		$done = bml_it_backcatalog($_POST['batch'],$_POST['offset']);
 		if ($_POST['batch'] && !$done) {
 			echo '<form name="bml_it-backcatalog" method="post" action="">';
@@ -452,7 +458,7 @@ function bml_it_options () {
 		}
 	}
 
-	if ($_POST['action']=='update') {
+	if ( $action=='update' ) {
 		update_option('bml_it_whichimgs',   $_POST['bml_it_whichimgs'] );
 		update_option('bml_it_replacesrc',  $_POST['bml_it_replacesrc'] );
 		update_option('bml_it_custtagname', $_POST['bml_it_custtagname'] );

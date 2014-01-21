@@ -4,7 +4,7 @@ Donate link: http://www.BlueMedicineLabs.com/
 Tags: images, gallery, photobloggers, attachments, photo, links, external, photographers, Flickr, save, download
 Requires at least: 2.7
 Tested up to: 3.8
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 
 This plugin turns images that are hosted elsewhere into images that are now in your Media Library, and the code on your page is automatically updated.
 
@@ -94,6 +94,9 @@ Yes, there are numerous ways that this plugin could be used unethically, but the
 1. This screenshot is the admin screen you will find under Settings.
 
 == Changelog ==
+
+= 1.1.3 =
+* Fixed some PHP Notices and Warnings found by David Law (seo-dave).
 
 = 1.1.2 =
 * Polished code and cleaned up some functions.
