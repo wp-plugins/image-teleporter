@@ -1,5 +1,5 @@
 === Image Teleporter ===
-Contributors: bluemedicinelabs, internetmedicineman, trishacupra 
+Contributors: bluemedicinelabs, dr_scythe, trishacupra 
 Donate link: http://www.BlueMedicineLabs.com/
 Tags: images, gallery, photobloggers, attachments, photo, links, external, photographers, Flickr, save, download
 Requires at least: 2.7
@@ -94,6 +94,9 @@ Yes, there are numerous ways that this plugin could be used unethically, but the
 1. This screenshot is the admin screen you will find under Settings.
 
 == Changelog ==
+
+= 1.1.5 =
+* Fixed several general bugs, and introduced dr_scythe to the plugin for development.
 
 = 1.1.3 =
 * Fixed some PHP Notices and Warnings found by David Law (seo-dave).
